@@ -1,0 +1,11 @@
+name: local
+color: "#2E8A54"
+variables:
+  - name: base-url
+    value: http://localhost:3000
+  - name: email
+    value: matheo.deleplanque@gmail.com
+  - secret: true
+    name: password
+  - secret: true
+    name: token

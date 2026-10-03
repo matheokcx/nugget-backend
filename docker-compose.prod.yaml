@@ -1,0 +1,36 @@
+services:
+  nest-api:
+    image: ${API_IMAGE}
+    restart: always
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - '127.0.0.1:3001:3000'
+    networks:
+      - base
+
+  postgres-db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - base
+
+volumes:
+  db:
+
+networks:
+  base:

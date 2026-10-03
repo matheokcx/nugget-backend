@@ -1,0 +1,16 @@
+.idea
+.vscode
+.git
+.gitignore
+.claude
+.env
+.env.test
+.github
+
+*.md
+Dockerfile
+bruno
+
+node_modules
+build
+dist
