@@ -39,7 +39,7 @@ import { readFileSync } from 'node:fs';
         }),
       }),
       templates: new FileTemplateEngine({
-        dir: 'src/mail/templates',
+        dir: __dirname + '/mail/templates',
         layout: 'layout',
         cache: process.env.NODE_ENV === 'production',
       }),

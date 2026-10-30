@@ -6,12 +6,16 @@ import {
   HttpStatus,
   Post,
   Request,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './auth.guard';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { User } from '../user/entities/user.entity';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ConfirmResetDto } from './dto/confirm-reset.dto';
+import { EmailDto } from './dto/email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,7 +41,19 @@ export class AuthController {
 
   @Post('forgot-password')
   @Public()
-  async forgot(@Body() body: Omit<LoginDto, 'password'>): Promise<void> {
+  async forgotPassword(@Body() body: EmailDto): Promise<void> {
     await this.authService.sendResetPasswordMail(body.email);
+  }
+
+  @Post('confirm-reset')
+  @Public()
+  async confirmReset(@Body() dto: ConfirmResetDto): Promise<void> {
+    await this.authService.validateCode(dto);
+  }
+
+  @Patch('reset-password')
+  @Public()
+  async resetPassword(@Body() dto: ResetPasswordDto): Promise<void> {
+    await this.authService.resetPassword(dto);
   }
 }
