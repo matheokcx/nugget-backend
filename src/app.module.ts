@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { FileTemplateEngine, MailModule, SmtpTransport } from '@nestjs/mail';
 import { readFileSync } from 'node:fs';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -47,6 +48,14 @@ import { readFileSync } from 'node:fs';
     }),
     UserModule,
     AuthModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1 * 60 * 1000,
+          limit: 30,
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -54,6 +63,10 @@ import { readFileSync } from 'node:fs';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
