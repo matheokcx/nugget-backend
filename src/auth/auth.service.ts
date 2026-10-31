@@ -13,7 +13,7 @@ import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ForgotPasswordMail } from './mails/forgot-password.mail';
 import { Mailer } from '@nestjs/mail';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Raw, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ResetPasswordCodeEntity } from './entities/reset-password-code.entity';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ConfirmResetDto } from './dto/confirm-reset.dto';

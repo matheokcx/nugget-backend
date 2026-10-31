@@ -33,6 +33,7 @@
     "@nestjs/mail": "^0.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/throttler": "^6.7.1",
     "@nestjs/typeorm": "^11.0.3",
     "@types/dotenv": "^6.1.1",
     "bcrypt": "^6.0.0",
