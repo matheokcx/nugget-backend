@@ -114,7 +114,6 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDto): Promise<void> {
-    const code: ResetPasswordCodeEntity = await this.validateCode(dto);
     const user: User | null = await this.usersRepository.findOneBy({
       email: dto.email,
     });
@@ -126,6 +125,10 @@ export class AuthService {
     user.password = await bcrypt.hash(dto.newPassword, 10);
     await this.usersRepository.save(user);
 
-    await this.resetPasswordCodeRepository.remove(code);
+    await this.resetPasswordCodeRepository
+      .createQueryBuilder('rpc')
+      .delete()
+      .where('email = :email', { email: user.email })
+      .execute();
   }
 }
