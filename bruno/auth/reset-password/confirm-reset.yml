@@ -1,0 +1,22 @@
+info:
+  name: confirm-reset
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{base-url}}/auth/confirm-reset"
+  body:
+    type: json
+    data: |-
+      {
+        "code": "391980",
+        "email": "{{email}}"
+      }
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

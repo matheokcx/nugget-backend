@@ -6,7 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { FileTemplateEngine, MailModule, SmtpTransport } from '@nestjs/mail';
+import { readFileSync } from 'node:fs';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -28,8 +31,31 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       }),
       inject: [ConfigService],
     }),
+    MailModule.forRoot({
+      transport: new SmtpTransport({
+        url: process.env.SMTP_URL,
+        pool: true,
+        ...(process.env.SMTP_CA_FILE && {
+          tls: { ca: readFileSync(process.env.SMTP_CA_FILE) },
+        }),
+      }),
+      templates: new FileTemplateEngine({
+        dir: __dirname + '/mail/templates',
+        layout: 'layout',
+        cache: process.env.NODE_ENV === 'production',
+      }),
+      from: 'Nugget <nugget@no-reply.com>',
+    }),
     UserModule,
     AuthModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1 * 60 * 1000,
+          limit: 30,
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -37,6 +63,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

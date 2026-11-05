@@ -6,6 +6,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
+import { ForgotPasswordMail } from './mails/forgot-password.mail';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ResetPasswordCodeEntity } from './entities/reset-password-code.entity';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   controllers: [AuthController],
@@ -15,6 +19,7 @@ import { AuthGuard } from './auth.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    ForgotPasswordMail,
   ],
   imports: [
     UserModule,
@@ -29,6 +34,7 @@ import { AuthGuard } from './auth.guard';
       }),
       global: true,
     }),
+    TypeOrmModule.forFeature([ResetPasswordCodeEntity, User]),
   ],
   exports: [AuthService],
 })
