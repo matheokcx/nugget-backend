@@ -10,6 +10,7 @@ import { ForgotPasswordMail } from './mails/forgot-password.mail';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResetPasswordCodeEntity } from './entities/reset-password-code.entity';
 import { User } from '../user/entities/user.entity';
+import { SessionAuthProvider } from './session-auth.provider';
 
 @Module({
   controllers: [AuthController],
@@ -20,6 +21,7 @@ import { User } from '../user/entities/user.entity';
       useClass: AuthGuard,
     },
     ForgotPasswordMail,
+    SessionAuthProvider,
   ],
   imports: [
     UserModule,
