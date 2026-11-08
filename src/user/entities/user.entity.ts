@@ -3,10 +3,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserRoleEnum } from '../enums/user-role.enum';
+import { SavedContent } from '../../content/saved-contents/entities/saved-content.entity';
+import { SummaryUsage } from '../../content/summary-usages/entities/summary-usage.entity';
+import { Subscription } from '../../subscription/subscriptions/entities/subscription.entity';
 
 @Entity('users')
 export class User {
@@ -41,6 +47,20 @@ export class User {
     default: UserRoleEnum.USER,
   })
   role: UserRoleEnum;
+
+  @OneToMany(
+    () => SavedContent,
+    (savedContent: SavedContent) => savedContent.user,
+  )
+  savedContents: SavedContent[];
+
+  @OneToOne(() => SummaryUsage)
+  @JoinColumn()
+  summaryUsage: SummaryUsage;
+
+  @OneToOne(() => Subscription)
+  @JoinColumn()
+  subscription: Subscription;
 
   @CreateDateColumn({
     name: 'created_at',

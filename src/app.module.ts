@@ -10,6 +10,14 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { FileTemplateEngine, MailModule, SmtpTransport } from '@nestjs/mail';
 import { readFileSync } from 'node:fs';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { SubscriptionModule } from './subscription/subscription.module';
+import { ContentModule } from './content/content.module';
+import { SubscriptionEventsModule } from './subscription/subscription-events/subscription-events.module';
+import { SubscriptionsModule } from './subscription/subscriptions/subscriptions.module';
+import { FilesModule } from './files/files.module';
+import { SummaryUsagesModule } from './content/summary-usages/summary-usages.module';
+import { SummariesModule } from './content/summaries/summaries.module';
+import { SavedContentsModule } from './content/saved-contents/saved-contents.module';
 
 @Module({
   imports: [
@@ -56,6 +64,14 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
+    SavedContentsModule,
+    SummariesModule,
+    SummaryUsagesModule,
+    FilesModule,
+    SubscriptionsModule,
+    SubscriptionEventsModule,
+    ContentModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [
