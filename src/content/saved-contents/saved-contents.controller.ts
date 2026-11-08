@@ -1,45 +1,31 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { SavedContentsService } from './saved-contents.service';
 import { CreateSavedContentDto } from './dto/create-saved-content.dto';
-import { UpdateSavedContentDto } from './dto/update-saved-content.dto';
+import { SavedContent } from './entities/saved-content.entity';
 
 @Controller('saved-contents')
 export class SavedContentsController {
   constructor(private readonly savedContentsService: SavedContentsService) {}
 
   @Post()
-  create(@Body() createSavedContentDto: CreateSavedContentDto) {
-    return this.savedContentsService.create(createSavedContentDto);
+  async create(
+    @Body() createSavedContentDto: CreateSavedContentDto,
+  ): Promise<SavedContent> {
+    return await this.savedContentsService.create(createSavedContentDto);
   }
 
   @Get()
-  findAll() {
-    return this.savedContentsService.findAll();
+  async findAll(): Promise<SavedContent[]> {
+    return await this.savedContentsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.savedContentsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSavedContentDto: UpdateSavedContentDto,
-  ) {
-    return this.savedContentsService.update(+id, updateSavedContentDto);
+  async findOne(@Param('id') id: string): Promise<SavedContent | null> {
+    return await this.savedContentsService.findOne(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.savedContentsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.savedContentsService.remove(+id);
   }
 }

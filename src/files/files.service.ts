@@ -4,7 +4,7 @@ import { StoredUpload } from '@nestjs/storage';
 @Injectable()
 export class FilesService {
   create(file: StoredUpload | undefined) {
-    return 'This action adds a new file';
+    return `This action adds a new file: ${file?.originalname}`;
   }
 
   findOne(id: number) {

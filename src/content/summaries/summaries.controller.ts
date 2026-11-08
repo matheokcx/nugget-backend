@@ -10,33 +10,37 @@ import {
 import { SummariesService } from './summaries.service';
 import { CreateSummaryDto } from './dto/create-summary.dto';
 import { UpdateSummaryDto } from './dto/update-summary.dto';
+import { Summary } from './entities/summary.entity';
 
 @Controller('summaries')
 export class SummariesController {
   constructor(private readonly summariesService: SummariesService) {}
 
   @Post()
-  create(@Body() createSummaryDto: CreateSummaryDto) {
-    return this.summariesService.create(createSummaryDto);
+  async create(@Body() createSummaryDto: CreateSummaryDto): Promise<Summary> {
+    return await this.summariesService.create(createSummaryDto);
   }
 
   @Get()
-  findAll() {
-    return this.summariesService.findAll();
+  async findAll(): Promise<Summary[]> {
+    return await this.summariesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.summariesService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Summary | null> {
+    return await this.summariesService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSummaryDto: UpdateSummaryDto) {
-    return this.summariesService.update(+id, updateSummaryDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateSummaryDto: UpdateSummaryDto,
+  ) {
+    return await this.summariesService.update(+id, updateSummaryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.summariesService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.summariesService.remove(+id);
   }
 }

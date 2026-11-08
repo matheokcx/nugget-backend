@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSummaryDto } from './dto/create-summary.dto';
 import { UpdateSummaryDto } from './dto/update-summary.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Summary } from './entities/summary.entity';
 
 @Injectable()
 export class SummariesService {
-  create(createSummaryDto: CreateSummaryDto) {
-    return 'This action adds a new summary';
+  constructor(
+    @InjectRepository(Summary)
+    private summaryRepository: Repository<Summary>,
+  ) {}
+
+  async create(createSummaryDto: CreateSummaryDto): Promise<Summary> {
+    const summary: Summary = this.summaryRepository.create(createSummaryDto);
+    return await this.summaryRepository.save(summary);
   }
 
-  findAll() {
-    return `This action returns all summaries`;
+  async findAll(): Promise<Summary[]> {
+    return await this.summaryRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} summary`;
+  async findOne(id: number): Promise<Summary | null> {
+    return await this.summaryRepository.findOneBy({ id });
   }
 
-  update(id: number, updateSummaryDto: UpdateSummaryDto) {
-    return `This action updates a #${id} summary`;
+  async update(id: number, updateSummaryDto: UpdateSummaryDto) {
+    return await this.summaryRepository.update(id, updateSummaryDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} summary`;
+  async remove(id: number) {
+    const summaryExists: boolean = await this.summaryRepository.exists({
+      where: { id },
+    });
+
+    if (!summaryExists) {
+      throw new NotFoundException();
+    }
+
+    return await this.summaryRepository.delete(id);
   }
 }

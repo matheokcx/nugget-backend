@@ -11,11 +11,15 @@ export class SummaryUsage {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   count: number;
 
   @Column({
     name: 'reset_at',
+    nullable: true,
+    default: null,
   })
   resetAt: Date;
 

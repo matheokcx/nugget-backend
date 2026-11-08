@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,23 +12,37 @@ export class SubscriptionsService {
     private subscriptionsRepository: Repository<Subscription>,
   ) {}
 
-  create(createSubscriptionDto: CreateSubscriptionDto) {
-    return 'This action adds a new subscription';
+  async create(
+    createSubscriptionDto: CreateSubscriptionDto,
+  ): Promise<Subscription> {
+    const subscription: Subscription = this.subscriptionsRepository.create(
+      createSubscriptionDto,
+    );
+    return await this.subscriptionsRepository.save(subscription);
   }
 
-  findAll() {
-    return this.subscriptionsRepository.find();
+  async findAll(): Promise<Subscription[]> {
+    return await this.subscriptionsRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subscription`;
+  async findOne(id: number): Promise<Subscription | null> {
+    return await this.subscriptionsRepository.findOneBy({ id });
   }
 
-  update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
-    return `This action updates a #${id} subscription`;
+  async update(id: number, updateSubscriptionDto: UpdateSubscriptionDto) {
+    return await this.subscriptionsRepository.update(id, updateSubscriptionDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subscription`;
+  async remove(id: number) {
+    const subscriptionExists: boolean =
+      await this.subscriptionsRepository.exists({
+        where: { id },
+      });
+
+    if (!subscriptionExists) {
+      throw new NotFoundException();
+    }
+
+    return await this.subscriptionsRepository.delete(id);
   }
 }

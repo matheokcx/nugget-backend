@@ -1,24 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { SubscriptionEvent } from './entities/subscription-event.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SubscriptionEventsService {
-  create(createSubscriptionEventDto: unknown) {
-    return 'This action adds a new subscriptionEvent';
+  constructor(
+    @InjectRepository(SubscriptionEvent)
+    private subscriptionEventRepository: Repository<SubscriptionEvent>,
+  ) {}
+
+  async create(
+    createSubscriptionEventDto: unknown,
+  ): Promise<SubscriptionEvent> {
+    const subscriptionEvent: SubscriptionEvent =
+      this.subscriptionEventRepository.create(
+        createSubscriptionEventDto as SubscriptionEvent,
+      );
+    return await this.subscriptionEventRepository.save(subscriptionEvent);
   }
 
-  findAll() {
-    return `This action returns all subscriptionEvents`;
+  async findAll(): Promise<SubscriptionEvent[]> {
+    return await this.subscriptionEventRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subscriptionEvent`;
+  async findOne(id: number): Promise<SubscriptionEvent | null> {
+    return await this.subscriptionEventRepository.findOneBy({ id });
   }
 
-  update(id: number, updateSubscriptionEventDto: unknown) {
-    return `This action updates a #${id} subscriptionEvent`;
+  async update(id: number, updateSubscriptionEventDto: unknown) {
+    return await this.subscriptionEventRepository.update(
+      id,
+      updateSubscriptionEventDto as SubscriptionEvent,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subscriptionEvent`;
+  async remove(id: number) {
+    const subscriptionEventExists: boolean =
+      await this.subscriptionEventRepository.exists({
+        where: { id },
+      });
+
+    if (!subscriptionEventExists) {
+      throw new NotFoundException();
+    }
+
+    return await this.subscriptionEventRepository.delete(id);
   }
 }

@@ -1,0 +1,23 @@
+info:
+  name: createSummary
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{base-url}}/summaries"
+  body:
+    type: json
+    data: |
+      {
+        "summary": "Voici le résumé produit par l'intelligence artificielle concernant la vidéo enregistrée.",
+        "savedContentId": 1
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

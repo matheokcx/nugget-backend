@@ -1,0 +1,22 @@
+info:
+  name: updateSummary
+  type: http
+  seq: 4
+
+http:
+  method: PATCH
+  url: "{{base-url}}/summaries/1"
+  body:
+    type: json
+    data: |
+      {
+        "summary": "prout"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
